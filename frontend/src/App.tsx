@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import VehicleDetails from "./components/VehicleDetails";
 import ManufacturerPanel from "./components/ManufacturerPanel";
 import { Contract } from "ethers";
 import AdminPanel from "./components/AdminPanel";
@@ -16,6 +17,7 @@ function App() {
     const [vehicles, setVehicles] = useState<VehicleDisplay[]>([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
 
     async function handleConnect() {
         try {
@@ -90,7 +92,20 @@ function App() {
                 </button>
             )}
 
-            <VehicleList vehicles={vehicles} />
+            {contract && (
+            selectedVehicleId ? (
+                <VehicleDetails
+                    contract={contract}
+                    vehicleId={selectedVehicleId}
+                    onBack={() => setSelectedVehicleId(null)}
+                />
+            ) : (
+                <VehicleList
+                    vehicles={vehicles}
+                    onViewDetails={(id) => setSelectedVehicleId(id)}
+                />
+            )
+        )}
         </div>
     );
 }
