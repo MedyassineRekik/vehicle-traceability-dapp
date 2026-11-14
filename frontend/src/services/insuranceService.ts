@@ -51,21 +51,39 @@ export async function reportInsuranceEvent(
   description: string,
   eventDate: string
 ): Promise<void> {
-  if (!eventType.trim()) {
+  if (!/^\d+$/.test(vehicleId)) {
+    throw new Error("Veuillez sélectionner un véhicule valide.");
+  }
+
+  const cleanEventType = eventType.trim();
+  const cleanDescription = description.trim();
+
+  if (!cleanEventType) {
     throw new Error("Le type d'événement est obligatoire.");
   }
 
-  if (!description.trim()) {
+  if (!cleanDescription) {
     throw new Error("La description est obligatoire.");
+  }
+
+  if (cleanDescription.length > 1000) {
+    throw new Error("La description ne doit pas dépasser 1000 caractères.");
   }
 
   if (!eventDate) {
     throw new Error("La date de l'événement est obligatoire.");
   }
 
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) {
+    throw new Error("Format de date invalide.");
+  }
+
   const date = new Date(`${eventDate}T00:00:00`);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== eventDate
+  ) {
     throw new Error("Date invalide.");
   }
 
@@ -77,8 +95,8 @@ export async function reportInsuranceEvent(
 
   const tx = await contract.reportInsuranceEvent(
     BigInt(vehicleId),
-    eventType.trim(),
-    description.trim(),
+    cleanEventType,
+    cleanDescription,
     BigInt(timestamp)
   );
 

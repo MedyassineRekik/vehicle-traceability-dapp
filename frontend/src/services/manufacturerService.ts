@@ -17,16 +17,29 @@ export async function registerVehicle(
     year: number,
     initialOwner: string
 ): Promise<string> {
-    if (!isAddress(initialOwner)) {
+    const cleanVin = vin.trim();
+    const cleanBrand = brand.trim();
+    const cleanModel = model.trim();
+    const cleanOwner = initialOwner.trim();
+
+    if (!cleanVin || !cleanBrand || !cleanModel) {
+        throw new Error("Veuillez remplir tous les champs obligatoires.");
+    }
+
+    if (!Number.isInteger(year) || year <= 1885) {
+        throw new Error("Année de fabrication invalide.");
+    }
+
+    if (!isAddress(cleanOwner)) {
         throw new Error("Adresse du propriétaire invalide.");
     }
 
     const tx = await contract.registerVehicle(
-        vin.trim(),
-        brand.trim(),
-        model.trim(),
+        cleanVin,
+        cleanBrand,
+        cleanModel,
         year,
-        getAddress(initialOwner)
+        getAddress(cleanOwner)
     );
 
     await tx.wait();
@@ -37,7 +50,7 @@ export async function registerVehicle(
     for (const id of ids) {
         const vehicle = await contract.getVehicle(id);
 
-        if (vehicle.vin === vin.trim()) {
+        if (vehicle.vin === cleanVin) {
             return id.toString();
         }
     }
@@ -51,6 +64,10 @@ export async function certifyVehicle(
     contract: Contract,
     vehicleId: string
 ): Promise<void> {
+    if (!vehicleId || !/^\d+$/.test(vehicleId)) {
+        throw new Error("Identifiant du véhicule invalide.");
+    }
+
     const tx = await contract.certifyVehicle(BigInt(vehicleId));
     await tx.wait();
 }

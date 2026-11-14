@@ -85,6 +85,15 @@ function App() {
       );
     }
   }
+  function handleReturnToLogin() {
+    setAccount("");
+    setContract(null);
+    setRoles(emptyRoles);
+    setSelectedVehicleId(null);
+    setActiveSection("marketplace");
+    setVehicles([]);
+    setMessage("");
+    }
 
   useEffect(() => {
     if (!contract || !account) {
@@ -301,11 +310,11 @@ function App() {
               <span>{roleLabels.length ? roleLabels.join(" · ") : "Utilisateur"}</span>
             </div>
             <button
-              className="switch-wallet-button"
-              onClick={handleConnect}
-              title="Changer de compte MetaMask"
+            className="switch-wallet-button"
+            onClick={handleReturnToLogin}
+            title="Retourner à la connexion MetaMask"
             >
-              ↻
+            ↪
             </button>
           </div>
         </header>
