@@ -1,6 +1,8 @@
 
 import { useState } from "react";
+import ManufacturerPanel from "./components/ManufacturerPanel";
 import { Contract } from "ethers";
+import AdminPanel from "./components/AdminPanel";
 import { connectWallet } from "./services/wallet";
 import {
     getAllVehicles,
@@ -66,7 +68,19 @@ function App() {
             )}
 
             <p>{message}</p>
-
+            {contract && account && (
+            <AdminPanel
+                contract={contract}
+                account={account}
+            />
+           )}
+            {contract && account && (
+            <ManufacturerPanel
+                contract={contract}
+                account={account}
+                 onRefresh={handleLoadVehicles}
+          />
+          )}
             {contract && (
                 <button
                     onClick={handleLoadVehicles}
