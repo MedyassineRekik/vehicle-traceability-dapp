@@ -55,6 +55,7 @@ abstract contract VehicleTraceabilityStorage is
     // =========================================
 
     uint256 internal nextVehicleId = 1;
+    uint256[] internal allVehicleIds;
 
     mapping(uint256 => Vehicle) internal vehicles;
 
