@@ -1,4 +1,4 @@
-{"abi": [
+[
     {
       "inputs": [],
       "name": "AccessControlBadConfirmation",
@@ -855,4 +855,4 @@
       "stateMutability": "view",
       "type": "function"
     }
-]}
+]
